@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1a79ef6dbe.js" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Game of Life</title>
+</head>
+
+<body style="background-color: #333; margin: 0; padding: 0;">
+
+    <div id="controls">
+        <button onclick="play()" type="button" class="btn btn-primary" style="margin: 10px 0 0 10px;" id="play"><i
+                class="fa-solid fa-play"></i></button>
+        <button onclick="step()" type="button" class="btn btn-primary" style="margin: 10px 0 0 10px;"
+            id="step">Step</button>
+        <button onclick="stop()" type="button" class="btn btn-primary" style="margin: 10px 0 0 10px;" id="stop"><i
+                class="fa-solid fa-stop"></i></button>
+        <div style="float:right">
+            <input type="range" name="speed" id="speed" min="1" max="1000" value="100" step="1" />
+            <label for="speed">Speed</label>
+        </div>
+    </div>
+    <canvas id="canvas" style="border:1px solid #ffffff;">
+    </canvas>
+    <script src="game.js"></script>
+</body>
+
+</html>
