@@ -1,11 +1,11 @@
 const squareSize = 10;
 const gap = 2;
-const gameTableSizeX = 500;
-const gameTableSizeY = 250;
+const gameTableSizeX = 1000;
+const gameTableSizeY = 1000;
 const onSquereColor = "#66aaff";
 const offSquereColor = "#444444";
-const paralelFactor = 50;
-let paralel = parseInt(gameTableSizeX * gameTableSizeX / 2500);
+const paralelFactor = 25;
+let paralel = parseInt(gameTableSizeX * gameTableSizeX / (paralelFactor * paralelFactor));
 if (paralel < 1) {
     paralel = 1;
 }
@@ -35,7 +35,7 @@ function resize() {
 }
 
 window.addEventListener('resize', function () {
-    redraw();
+    debounce(redraw(), 1000);
 });
 
 function init() {
@@ -76,6 +76,7 @@ function drawGameTable() {
 
 let lastI = -1;
 let lastJ = -1;
+let lastPos = { x: null, y: null };
 let mouseIsPressed = false;
 let setTo = 1;
 
@@ -100,6 +101,23 @@ function getNodeAtPosition(x, y) {
     }
 }
 
+function getNodesAtPositions(xStart, xEnd, yStart, yEnd) {
+    let stepsX = (xEnd - xStart) / squareSize;
+    let stepsY = (yEnd - yStart) / squareSize;
+    if (stepsX < 1){
+        stepsX = 1;
+    }
+    if (stepsY < 1){
+        stepsY = 1;
+    }
+    let nodes = [];
+    for (let x = xStart, y = yStart; x <= xEnd, y <= yEnd; x += stepsX, y += stepsY) {
+        nodes.push(getNodeAtPosition(x, y))
+    }
+    return nodes;
+}
+
+
 function setValue(node, newValue) {
     lastI = node.i;
     lastJ = node.j;
@@ -120,6 +138,8 @@ function toggle(node) {
 
 canvas.addEventListener('mousedown', function (e) {
     mouseIsPressed = true;
+    lastPos.x = e.clientX;
+    lastPos.y = e.clientY;
     let node = getNodeAtPosition(e.clientX, e.clientY);
     setTo = toggle(node);
     redraw();
@@ -127,15 +147,40 @@ canvas.addEventListener('mousedown', function (e) {
 
 canvas.addEventListener('mouseup', function (e) {
     mouseIsPressed = false;
+    lastPos.x = null;
+    lastPos.y = null;
 });
 
 canvas.addEventListener('mousemove', function (e) {
     if (mouseIsPressed) {
-        let node = getNodeAtPosition(e.clientX, e.clientY);
-        setValue(node, setTo);
+        let xStart = 0;
+        let xEnd = 0;
+        let yStart = 0;
+        let yEnd = 0;
+        if (e.clientX < lastPos.x) {
+            xStart = e.clientX;
+            xEnd = lastPos.x;
+        } else {
+            xStart = lastPos.x;
+            xEnd = e.clientX;
+        }
+        if (e.clientY < lastPos.y) {
+            yStart = e.clientY;
+            yEnd = lastPos.y;
+        } else {
+            yStart = lastPos.y;
+            yEnd = e.clientY;
+        }
+        let nodes = getNodesAtPositions(xStart, xEnd, yStart, yEnd);
+        for (let index = 0; index < nodes.length; index++) {
+            const node = nodes[index];
+            setValue(node, setTo);
+        }
         if (!playing) {
             redraw();
         }
+        lastPos.x = e.clientX;
+        lastPos.y = e.clientY;
     }
 });
 
@@ -191,7 +236,7 @@ function step() {
             }
         }
     }
-    redraw();
+    debounce(redraw(), 5000);
 };
 
 
@@ -205,15 +250,15 @@ async function paralelStepMain() {
     let promises = [];
     for (let row = 0; row < gameTableSizeX / paralel; row++) {
         for (let collumn = 0; collumn < gameTableSizeY / paralel; collumn++) {
-            let startX = row * 50;
-            let endX = startX + 50;
-            let startY = collumn * 50;
-            let endY = startY + 50;
+            let startX = row * paralelFactor;
+            let endX = startX + paralelFactor;
+            let startY = collumn * paralelFactor;
+            let endY = startY + paralelFactor;
             promises.push(paralelStep(startX, endX, startY, endY));
         }
     }
     await Promise.all(promises);
-    redraw()
+    debounce(redraw(), 5000);
 }
 
 async function paralelStep(startX, endX, startY, endY) {
@@ -270,8 +315,8 @@ async function play() {
     playing = true;
     while (playing) {
         await sleep(stepDelay);
-        // step()
-        paralelStepMain();
+        step()
+        // paralelStepMain();
     }
 };
 
@@ -283,6 +328,19 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function debounce(func, timeout = 300) {
+    let timer = undefined;
+    return (...args) => {
+        if (!timer) {
+            func.apply(this, args);
+        }
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            timer = undefined;
+        }, timeout);
+    };
+}
+
 function load() {
     console.log("load")
 
@@ -292,7 +350,6 @@ function save() {
     console.log("save")
 
 }
-
 
 // ctx.moveTo(0, 0);
 // ctx.lineTo(200, 100);
