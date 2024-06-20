@@ -31,6 +31,10 @@
                 class="fa-solid fa-save icon-size-25p"></i></button>
         <button onclick="load()" type="button" class="btn btn-primary margin-top" id="loadGameState"><i
                 class="fa-solid fa-arrow-up-from-bracket icon-size-25p"></i></button>
+        <button onclick="clearGameState()" type="button" class="btn btn-primary margin-top margin-right" id="clearGameState"><i
+                class="fa-solid fa-broom icon-size-25p"></i></button>
+        <button onclick="randomPattern()" type="button" class="btn btn-primary margin-top" id="randomGameState"><i
+                class="fa-solid fa-random icon-size-25p"></i></button>
         <button onclick="openSettings()" type="button" class="btn btn-primary margin-top margin-right"
             style="float: right;" id="settings"><i class="fa-solid fa-gear icon-size-25p"></i></button>
     </div>
@@ -70,7 +74,6 @@
         <button onclick="applySettings()" type="button" class="btn btn-primary margin-top "
             style="margin: 15px 15px 15px 10px; float: right;" id="applySettings">Close</button>
     </dialog>
-    <script src="localStorage.js"></script>
     <script src="ui.js"></script>
     <script src="game.js"></script>
 </body>

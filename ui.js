@@ -96,6 +96,11 @@ function zoomLess() {
     redraw();
 }
 
+function clearGameState() {
+    clearGameTable();
+    redraw();
+}
+
 async function debounce(func, timeout = 300) {
     let timer = undefined;
     return (...args) => {
