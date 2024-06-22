@@ -1,8 +1,8 @@
 let gap = 1;
-let onSquereColor = "#99ffff";
-let afterImage1SquereColor = "#003333";
-let afterImage2SquereColor = "#001111";
-let offSquereColor = "#444444";
+let onSquareColor = "#99ffff";
+let afterImage1SquareColor = "#003333";
+let afterImage2SquareColor = "#001111";
+let offSquareColor = "#444444";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -103,13 +103,13 @@ function drawGameTable() {
                 continue;
             }
             if (gameTable[i][j] === 1) {
-                ctx.fillStyle = onSquereColor;
+                ctx.fillStyle = onSquareColor;
                 ctx.fillRect(x, y, squareSize - gap, squareSize - gap);
             } else if (afterimages > 0 && oldGameTable[i][j] === 1) {
-                ctx.fillStyle = afterImage1SquereColor;
+                ctx.fillStyle = afterImage1SquareColor;
                 ctx.fillRect(x, y, squareSize - gap, squareSize - gap);
             } else if (afterimages > 1 && oldGameTable2[i][j] === 1) {
-                ctx.fillStyle = afterImage2SquereColor;
+                ctx.fillStyle = afterImage2SquareColor;
                 ctx.fillRect(x, y, squareSize - gap, squareSize - gap);
             }
         }
